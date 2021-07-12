@@ -1,5 +1,6 @@
 <?php
 
+use Pusher\Pusher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

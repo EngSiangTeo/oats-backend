@@ -12,7 +12,8 @@
         "laravel/framework": "^8.40",
         "laravel/passport": "^10.1",
         "laravel/tinker": "^2.5",
-        "pusher/pusher-php-server": "^7.0"
+        "pusher/pusher-php-server": "^7.0",
+        "spatie/laravel-fractal": "^5.8"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

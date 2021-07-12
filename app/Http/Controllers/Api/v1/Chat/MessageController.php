@@ -4,38 +4,19 @@ namespace App\Http\Controllers\Api\v1\Chat;
 
 use Auth;
 use Exception;
+use App\Events\MessageSent;
+use Spatie\Fractal\Fractal;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use App\Modules\Chat\Models\Message;
 use App\Modules\Account\User\Models\User;
 use App\Http\Controllers\Api\ApiController;
-use App\Modules\Chat\Models\Message;
+use App\Modules\Chat\Transformers\MessageTransformer;
 
 /**
 * @group Account endpoints
 */
 class MessageController extends ApiController
 {
-    /**
-    * Login by Email and Password
-    *
-    * Login for user using email and password. If user credential exists in database, return 200 OK response and API token
-    *
-    * Otherwise, return 401 Unauthoriszed.
-    *
-    * @unauthenticated
-    *
-    * @bodyParam email email required The email of the user. Example: test@email.com
-    * @bodyParam password password required The password of the user. Example: password
-    *
-    * @responseField access_token The Token for the user.
-    *
-    * @response 200 {
-    *   "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZWU1YmE5YTg4YmJkYjJjM2VmYzlhZTk5ZDk1OGViYTc0ODg1M2RlY2MzMDc1NDZmMmI3YThmNGIyZjkxNDA0MmFhYTNjN2M5MGYyMzY3NWUiLCJpYXQiOjE2MjMyOTU0NDcuMDUxNDE4LCJuYmYiOjE2MjMyOTU0NDcuMDUxNDIzLCJleHAiOjE2NTQ4MzE0NDYuODUwNTY1LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.KCWNlW8JKBpgdpqYV3PK2Iud30pPwzXxk5dz1ShWoBLPMIRE6NY0E0yZcQo-NB9jutVdH-gPVfC9yUB_eqZPjAaIT9cLWlAMMPw76l2Ap6H6TIYqMm6dcR7JRwGTuJoQkspfYZDuLx-Xz6cWEMJrYzrdtOLdha_0e12w0H_raoanbFNHxjtzmuR-DT1TU74VkYMDD3r3aeNxuByuKRqhZq1WB7pWOPb3GP5mavTgyPOjB5_EeioHZuGvZMdae4y19GBVrUCSOlo_h9lRh88YHj-ek9c_NuufijsvFGJ-EGD9VRiEvc7graCPJbsYA1Z8XpbHheyqVuCcvDT84_2QuABipK8ScVnHRj5OTHjDeRIfA-yICQzZajuoEEAUgCDD1rKdfLTh1Hl3FE8Fnk44f89213_Rd0e3QNsJLnHrGKPRmVk3aWWbPbK_7Hoy0LXVymILGd5isVQQCDq-5W0JJWaxZR0HNzxYZCShm15MR8mDr7vja6sLh-vM9EVl_eEHHbjlPJUJkDILa9BI0o-m164PpF0YreaXni0yIs04S_WLF3J91KrLcoij4pNVzd7GpOKb_knx7lY_9zFqjbkZec-KSAQiI4YjpMynl15eiq5iVB7wWVe5gX6c-rPlJdgpObvWVLWPwgQj3xrWGS9HUo8-obucLqFoCtyC8Vepkfw"
-    * }
-    *
-    * @param Request $request
-    * @return Response
-    */
     public function index()
     {
         return Message::with('user')->get();
@@ -49,9 +30,10 @@ class MessageController extends ApiController
             'message' => $request->input('message')
         ]);
 
-        return [
-            'message' => $message,
-            'user' => $user,
-        ];
+        broadcast(new MessageSent($user, $message))->toOthers();
+
+        $message = Fractal($message, new MessageTransformer())->toArray();
+
+        return $this->respondSuccess($message, trans('success', ['resource' => 'Favourites']));
     }
 }

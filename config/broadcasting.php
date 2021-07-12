@@ -36,9 +36,9 @@ return [
             'secret' => env('PUSHER_APP_SECRET'),
             'app_id' => env('PUSHER_APP_ID'),
             'options' => [
-                'cluster' => env('PUSHER_APP_CLUSTER'),
-                'useTLS' => true,
-            ],
+                  'cluster' => env('PUSHER_APP_CLUSTER'),
+                  'encrypted' => true,
+              ],
         ],
 
         'ably' => [
@@ -57,11 +57,6 @@ return [
 
         'null' => [
             'driver' => 'null',
-        ],
-
-        'larasocket' => [
-            'driver' => 'larasocket',
-            'token' => env('LARASOCKET_TOKEN'),
         ],
 
     ],
