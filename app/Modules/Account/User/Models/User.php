@@ -7,6 +7,7 @@ use Schema;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Password;
+use App\Modules\Chat\Models\Message;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
@@ -22,11 +23,14 @@ class User extends Authenticatable implements CanResetPasswordContract
 
     protected $guarded = [];
 
+    public function messages() {
+        return $this->hasMany(Message::class);
+    }
+
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = bcrypt($value);
     }
-
 
     /**
      * Generate random string for password

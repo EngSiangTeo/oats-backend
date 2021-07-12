@@ -18,3 +18,10 @@ Route::namespace('Account')->name('account.')->group(function () {
     Route::post('/loginByEmail', 'Login\LoginApiController@loginByEmail')->name('login_by_email');
     Route::post('/registerByEmail', 'User\Register\RegisterApiController@registerByEmail')->name('register');
 });
+
+Route::middleware('auth:api')->group(function () {
+	Route::namespace('Chat')->name('chat.')->group(function () {
+		Route::get('/message', 'MessageController@index')->name('get_chat');
+		Route::post('/message', 'MessageController@store')->name('add_chat');
+	});
+});
