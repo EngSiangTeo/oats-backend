@@ -16,7 +16,7 @@ class CreateMessagesTable extends Migration
         Schema::create('messages', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->id();
-            $table->foreignId('chat_id');
+            $table->foreignId('chat_id')->constrained();
             $table->string('sender_username');
             $table->foreign('sender_username')->references('username')->on('users')->constrained();
             $table->text('content');
