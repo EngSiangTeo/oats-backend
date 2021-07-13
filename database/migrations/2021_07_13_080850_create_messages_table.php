@@ -14,9 +14,11 @@ class CreateMessagesTable extends Migration
     public function up()
     {
         Schema::create('messages', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->id();
-            $table->foreignId('chat_id')->constrained();
+            $table->foreignId('chat_id');
             $table->string('sender_username');
+            $table->foreign('sender_username')->references('username')->on('users')->constrained();
             $table->text('content');
             $table->string('sentiment');
             $table->dateTime('sent_at');

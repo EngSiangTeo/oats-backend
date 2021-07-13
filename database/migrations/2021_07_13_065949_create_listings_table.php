@@ -14,7 +14,7 @@ class CreateListingsTable extends Migration
     public function up()
     {
         Schema::create('listings', function (Blueprint $table) {
-            $table->id('listing_id')->autoIncrement();
+            $table->id();
             $table->string('username');
             $table->string('title');
             $table->text('description');
