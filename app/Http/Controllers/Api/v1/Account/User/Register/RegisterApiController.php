@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Api\v1\Account\User\Register;
 
 use Illuminate\Http\Request;
-use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Modules\Account\User\Models\User;
 use App\Http\Controllers\Api\ApiController;
+use Illuminate\Foundation\Auth\RegistersUsers;
 
 /**
 * @group Account endpoints
@@ -77,6 +77,7 @@ class RegisterApiController extends ApiController
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
@@ -92,6 +93,7 @@ class RegisterApiController extends ApiController
     {
         return User::create([
             'name' => $data['name'],
+            'username' => $data['username'],
             'email' => $data['email'],
             'password' => $data['password'],
         ]);
