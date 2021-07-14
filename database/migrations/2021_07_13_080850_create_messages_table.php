@@ -18,8 +18,7 @@ class CreateMessagesTable extends Migration
             $table->integer('chat_id');
             $table->integer('sender_id');
             $table->text('content');
-            $table->string('sentiment');
-            $table->dateTime('sent_at');
+            $table->string('sentiment')->nullable();
             $table->timestamps();
         });
     }

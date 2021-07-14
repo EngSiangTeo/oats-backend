@@ -42,20 +42,26 @@ class ChatController extends ApiController
     {
         $creator = Auth::user();
 
-        $chat = Chat::Create([
-            'creator_id' => $creator->id,
-            'listing_id' => $request->input('listing_id'),
-        ]);
+        $chat = Chat::where([
+                            'creator_id' => $creator->id,
+                            'listing_id' => $request->input('listing_id'),
+                        ])->firstOr(function() use ($creator, $request) {
+                            $chat = Chat::Create([
+                                'creator_id' => $creator->id,
+                                'listing_id' => $request->input('listing_id'),
+                            ]);
 
-        $userChat = ChatParticipant::Create([
-            'user_id' => $creator->id,
-            'chat_id' => $chat->id,
-        ]);
+                            $userChat = ChatParticipant::Create([
+                                'user_id' => $creator->id,
+                                'chat_id' => $chat->id,
+                            ]);
 
-        $targetChat = ChatParticipant::Create([
-            'user_id' => $request->input('target_id'),
-            'chat_id' => $chat->id,
-        ]);
+                            $targetChat = ChatParticipant::Create([
+                                'user_id' => $request->input('target_id'),
+                                'chat_id' => $chat->id,
+                            ]);
+                            return $chat;
+                        });
 
         return $this->respondSuccess($chat, trans('success', ['resource' => 'Chat']));
     }

@@ -12,11 +12,13 @@ class Chat extends Model
         'listing_id'
     ];
 
-    public function chatParticipant() {
+    public function chatParticipant()
+    {
         return $this->hasMany(ChatParticipant::class, 'chat_id');
     }
 
-    public function messages() {
+    public function message()
+    {
         return $this->hasMany(Message::class, 'chat_id');
     }
 }

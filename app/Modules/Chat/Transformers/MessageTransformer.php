@@ -11,7 +11,7 @@ class MessageTransformer extends TransformerAbstract
     {
         $messageArray = [
             'username' => $message->user->name,
-            'message' => $message->message,
+            'message' => $message->content,
         ];
 
         return $messageArray;
