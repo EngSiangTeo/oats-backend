@@ -29,6 +29,7 @@ Route::middleware('auth:api')->group(function () {
 	});
 
 	Route::namespace('Listing')->name('listing.')->group(function () {
-		Route::get('/user-listing', 'ListingApiController@index')->name('get_user_listing');
+		Route::get('/user-listings', 'ListingApiController@index')->name('get_user_listings');
+		Route::get('/all-listings', 'ListingApiController@getAllListings')->name('get_all_listings');
 	});
 });

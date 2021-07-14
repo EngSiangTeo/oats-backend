@@ -7,17 +7,8 @@ use App\Modules\Listing\Models\Listing;
 
 class ListingTransformer extends TransformerAbstract
 {
-	protected $currentUserId;
-
-	public function __construct($currentUserId)
-	{
-		$this->currentUserId = $currentUserId;
-	}
-
     public function transform(Listing $listing)
     {
-    	$userId = $this->currentUserId;
-
         $listingArray = [
 			'listing_id'=> $listing->id,
             'user_id' => $listing->user_id,

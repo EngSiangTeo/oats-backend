@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Api\v1\Listing;
 
 use Auth;
+use Spatie\Fractal\Fractal;
+use Illuminate\Support\Facades\DB;
 use App\Modules\Listing\Models\Listing;
+use Spatie\Fractalistic\ArraySerializer;
 use App\Modules\Account\User\Models\User;
 use App\Http\Controllers\Api\ApiController;
 use App\Modules\Chat\Models\ChatParticipant;
@@ -19,36 +22,34 @@ class ListingApiController extends ApiController
     {
         $user = Auth::user();
 
-        $listings = Listing::with("user")->get();
+        $listings = Listing::with("user")
+                            ->whereHas("user", function ($query) use ($user) {
+                                return $query->where('user_id', '=', $user->id);
+                            })
+                            ->get();
 
         $listings = Fractal::create()
                     ->collection($listings)
-                    ->transformWith(new ListingTransformer($user->id))
+                    ->transformWith(new ListingTransformer())
                     ->serializeWith(new ArraySerializer())
                     ->toArray();
 
         return $this->respondSuccess($listings, trans('api.generic.index.success', ['resource' => 'Messages']));
     }
 
-    // public function createNewConversation(Request $request)
-    // {
-    //     $creator = Auth::user();
+    // returns all listings ordered by most recent
+    public function getAllListings()
+    {
+        $listings = Listing::with("user")
+                            ->orderBy('updated_at', 'desc')
+                            ->get();
 
-    //     $chat = Chat::Create([
-    //         'creator_id' => $creator->id,
-    //         'listing_id' => $request->input('listing_id'),
-    //     ]);
+        $listings = Fractal::create()
+                    ->collection($listings)
+                    ->transformWith(new ListingTransformer())
+                    ->serializeWith(new ArraySerializer())
+                    ->toArray();
 
-    //     $userChat = ChatParticipant::Create([
-    //         'user_id' => $creator->id,
-    //         'chat_id' => $chat->id,
-    //     ]);
-
-    //     $targetChat = ChatParticipant::Create([
-    //         'user_id' => $request->input('target_id'),
-    //         'chat_id' => $chat->id,
-    //     ]);
-
-    //     return $this->respondSuccess($chat, trans('success', ['resource' => 'Chat']));
-    // }
+        return $this->respondSuccess($listings, trans('api.generic.index.success', ['resource' => 'Messages']));
+    }
 }

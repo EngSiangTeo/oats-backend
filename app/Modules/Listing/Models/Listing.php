@@ -3,6 +3,7 @@
 namespace App\Modules\Listing\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Modules\Account\User\Models\User;
 
 class Listing extends Model
 {
@@ -13,4 +14,5 @@ class Listing extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    
 }
