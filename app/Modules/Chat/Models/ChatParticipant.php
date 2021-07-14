@@ -5,17 +5,18 @@ namespace App\Modules\Chat\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Modules\Account\User\Models\User;
 
-class Message extends Model
+class ChatParticipant extends Model
 {
     protected $fillable = [
-        'message'
+        'user_id',
+        'chat_id'
     ];
 
     public function user() {
-        return $this->belongsTo(User::class, 'id', 'sender_id');
+        return $this->belongsTo(User::class);
     }
 
     public function chat() {
-        return $this->belongsTo(Chat::class, 'id', 'chat_id');
+        return $this->belongsTo(Chat::class);
     }
 }

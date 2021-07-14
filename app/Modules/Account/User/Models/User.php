@@ -5,9 +5,10 @@ namespace App\Modules\Account\User\Models;
 use Auth;
 use Schema;
 use Laravel\Passport\HasApiTokens;
+use App\Modules\Chat\Models\Message;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Password;
-use App\Modules\Chat\Models\Message;
+use App\Modules\Chat\Models\ChatParticipant;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
@@ -25,6 +26,10 @@ class User extends Authenticatable implements CanResetPasswordContract
 
     public function messages() {
         return $this->hasMany(Message::class);
+    }
+
+    public function chatParticipant() {
+        return $this->hasMany(ChatParticipant::class);
     }
 
     public function setPasswordAttribute($value)

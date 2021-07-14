@@ -14,7 +14,7 @@ use App\Http\Controllers\Api\ApiController;
 use App\Modules\Chat\Transformers\MessageTransformer;
 
 /**
-* @group Account endpoints
+* @group Chat endpoints
 */
 class MessageController extends ApiController
 {
