@@ -13,13 +13,11 @@ class CreateUserChatsTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_chats', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
-            $table->string('username')->references('username')->on('users')->constrained();
-            $table->foreignId('chat_id')->constrained();
-            $table->foreignId('listing_id')->constrained();
+        Schema::create('chat_participants', function (Blueprint $table) {
+            $table->integer('user_id');
+            $table->integer('chat_id');
             $table->timestamps();
-            $table->primary(['username', 'chat_id', 'listing_id']);
+            $table->primary(['user_id', 'chat_id']);
         });
     }
 
