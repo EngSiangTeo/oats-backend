@@ -13,7 +13,7 @@ use App\Modules\Chat\Models\ChatParticipant;
 use App\Modules\Listing\Transformers\ListingTransformer;
 
 /**
-* @group Chat endpoints
+* @group Listing endpoints
 */
 class ListingApiController extends ApiController
 {
