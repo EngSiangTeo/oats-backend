@@ -47,7 +47,7 @@ class MessageSent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('chat');
+        return new Channel('chat'.$this->message->chat_id);
     }
 
     public function broadcastAs()
@@ -64,7 +64,7 @@ class MessageSent implements ShouldBroadcast
     {
         return [
             'username' => $this->user->name,
-            'message' => $this->message->message
+            'message' => $this->message->content
         ];
     }
 }

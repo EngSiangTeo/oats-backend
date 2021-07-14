@@ -25,7 +25,7 @@ class User extends Authenticatable implements CanResetPasswordContract
     protected $guarded = [];
 
     public function messages() {
-        return $this->hasMany(Message::class);
+        return $this->hasMany(Message::class, 'sender_id', 'id');
     }
 
     public function chatParticipant() {

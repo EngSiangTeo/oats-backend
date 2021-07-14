@@ -8,14 +8,16 @@ use App\Modules\Account\User\Models\User;
 class Message extends Model
 {
     protected $fillable = [
-        'message'
+        'content',
+        'chat_id',
+        'sentiment'
     ];
 
     public function user() {
-        return $this->belongsTo(User::class, 'id', 'sender_id');
+        return $this->belongsTo(User::class, 'sender_id', 'id');
     }
 
     public function chat() {
-        return $this->belongsTo(Chat::class, 'id', 'chat_id');
+        return $this->belongsTo(Chat::class, 'chat_id', 'id');
     }
 }

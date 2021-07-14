@@ -22,8 +22,9 @@ Route::namespace('Account')->name('account.')->group(function () {
 
 Route::middleware('auth:api')->group(function () {
 	Route::namespace('Chat')->name('chat.')->group(function () {
-		Route::get('/message', 'MessageController@index')->name('get_chat');
-		Route::post('/message', 'MessageController@store')->name('add_chat');
+		Route::get('/messages', 'MessageController@index')->name('get_chats');
+		Route::get('/message/{chatId}', 'MessageController@messagesByChatId')->name('get_chat');
+		Route::post('/message/{chatId}', 'MessageController@store')->name('add_chat');
 		Route::get('/chats', 'ChatController@index')->name('chats');
 		Route::post('/startChat', 'ChatController@createNewConversation')->name('start_chat');
 	});
