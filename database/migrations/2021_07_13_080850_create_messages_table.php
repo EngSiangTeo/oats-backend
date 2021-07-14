@@ -17,8 +17,7 @@ class CreateMessagesTable extends Migration
             $table->engine = 'InnoDB';
             $table->id();
             $table->foreignId('chat_id')->constrained();
-            $table->string('sender_username');
-            $table->foreign('sender_username')->references('username')->on('users')->constrained();
+            $table->integer('sender_id')->references('id')->on('users')->constrained();
             $table->text('content');
             $table->string('sentiment');
             $table->dateTime('sent_at');
