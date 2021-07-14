@@ -27,4 +27,8 @@ Route::middleware('auth:api')->group(function () {
 		Route::get('/chats', 'ChatController@index')->name('chats');
 		Route::post('/startChat', 'ChatController@createNewConversation')->name('start_chat');
 	});
+
+	Route::namespace('Listing')->name('listing.')->group(function () {
+		Route::get('/user-listing', 'ListingApiController@index')->name('get_user_listing');
+	});
 });
