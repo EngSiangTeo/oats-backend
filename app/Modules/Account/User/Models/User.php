@@ -32,6 +32,7 @@ class User extends Authenticatable implements CanResetPasswordContract
         return $this->hasMany(ChatParticipant::class);
     }
 
+
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = bcrypt($value);
