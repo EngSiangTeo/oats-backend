@@ -41,6 +41,7 @@ class ListingApiController extends ApiController
     public function getAllListings()
     {
         $listings = Listing::with("user")
+                            ->orderBy('deprioritized')
                             ->orderBy('updated_at', 'desc')
                             ->get();
 
