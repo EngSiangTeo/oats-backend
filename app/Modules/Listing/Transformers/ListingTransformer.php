@@ -19,7 +19,7 @@ class ListingTransformer extends TransformerAbstract
             'category' => $listing->category,
             'price' => $listing->price,
             'listed_date' => Carbon::parse($listing->listed_date)->format('d M Y'),
-            'deprioritized' => $listing->deprioritized,
+            'deprioritized' => (bool) $listing->deprioritized,
             'created_at' => Carbon::parse($listing->created_at)->format('d M Y'),
             'updated_at' => Carbon::parse($listing->updated_at)->format('d M Y')
         ];
