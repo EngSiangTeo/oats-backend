@@ -8,10 +8,11 @@ use App\Events\MessageSent;
 use Spatie\Fractal\Fractal;
 use Illuminate\Http\Request;
 use App\Modules\Chat\Models\Chat;
-use App\Modules\Chat\Models\ChatParticipant;
+use App\Modules\Listing\Models\Listing;
 use Spatie\Fractalistic\ArraySerializer;
 use App\Modules\Account\User\Models\User;
 use App\Http\Controllers\Api\ApiController;
+use App\Modules\Chat\Models\ChatParticipant;
 use App\Modules\Chat\Transformers\ChatTransformer;
 
 /**
@@ -41,14 +42,15 @@ class ChatController extends ApiController
     public function createNewConversation(Request $request)
     {
         $creator = Auth::user();
+        $listingId = $request->input('listing_id');
 
         $chat = Chat::where([
                             'creator_id' => $creator->id,
-                            'listing_id' => $request->input('listing_id'),
-                        ])->firstOr(function() use ($creator, $request) {
+                            'listing_id' => $listingId,
+                        ])->firstOr(function() use ($creator, $listingId) {
                             $chat = Chat::Create([
                                 'creator_id' => $creator->id,
-                                'listing_id' => $request->input('listing_id'),
+                                'listing_id' => $listingId,
                             ]);
 
                             $userChat = ChatParticipant::Create([
@@ -56,13 +58,20 @@ class ChatController extends ApiController
                                 'chat_id' => $chat->id,
                             ]);
 
+                           $targetId = Listing::where('id', $listingId)
+                                        ->first()
+                                        ->user_id;
+
                             $targetChat = ChatParticipant::Create([
-                                'user_id' => $request->input('target_id'),
+                                'user_id' => $targetId,
                                 'chat_id' => $chat->id,
                             ]);
+
                             return $chat;
                         });
-
-        return $this->respondSuccess($chat, trans('success', ['resource' => 'Chat']));
+        $data = [
+            'chat_id' => $chat->id
+        ];
+        return $this->respondSuccess($data, trans('success', ['resource' => 'Chat']));
     }
 }

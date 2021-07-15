@@ -1,9 +1,9 @@
-id,username,name,email,password,remember_token,created_at,updated_at
-1,test,test,test@email.com,$2y$10$vy9MY/iuS7ISWVo4wZc0GuQNZsDAoYe69bqeFI9Yy6rABtG1RUeCO,NULL,"2021-07-14 08:03:19","2021-07-14 08:03:19"
-2,test2,test2,test2@email.com,$2y$10$MufkJmJmqtSsOeWCT8CIO.ox8X.nvmRKiJswlrfLTVJFpo15TJVCi,NULL,"2021-07-14 08:07:19","2021-07-14 08:07:19"
-3,dante,Dante,dante@email.com,$2y$10$MufkJmJmqtSsOeWCT8CIO.ox8X.nvmRKiJswlrfLTVJFpo15TJVCi,NULL,"2021-07-14 08:07:19","2021-07-14 08:07:19"
-4,engsiang,"Eng Siang",esteo@email.com,$2y$10$MufkJmJmqtSsOeWCT8CIO.ox8X.nvmRKiJswlrfLTVJFpo15TJVCi,NULL,"2021-07-14 08:07:19","2021-07-14 08:07:19"
-5,jordan,Jordan,jordan@email.com,$2y$10$MufkJmJmqtSsOeWCT8CIO.ox8X.nvmRKiJswlrfLTVJFpo15TJVCi,NULL,"2021-07-14 08:07:19","2021-07-14 08:07:19"
-6,weijie,"Wei Jie",weijie@email.com,$2y$10$MufkJmJmqtSsOeWCT8CIO.ox8X.nvmRKiJswlrfLTVJFpo15TJVCi,NULL,"2021-07-14 08:07:19","2021-07-14 08:07:19"
-7,wanting,"Wan Ting",wanting@email.com,$2y$10$MufkJmJmqtSsOeWCT8CIO.ox8X.nvmRKiJswlrfLTVJFpo15TJVCi,NULL,"2021-07-14 08:07:19","2021-07-14 08:07:19"
-8,extra,extra,extra@email.com,$2y$10$MufkJmJmqtSsOeWCT8CIO.ox8X.nvmRKiJswlrfLTVJFpo15TJVCi,NULL,"2021-07-14 08:07:19","2021-07-14 08:07:19"
+id,username,name,email,password,remember_token
+1,test,test,test@email.com,password123,NULL
+2,test2,test2,test2@email.com,password123,NULL
+3,dante,Dante,dante@email.com,password123,NULL
+4,engsiang,Eng Siang,esteo@email.com,password123,NULL
+5,jordan,Jordan,jordan@email.com,password123,NULL
+6,weijie,Wei Jie,weijie@email.com,password123,NULL
+7,wanting,Wan Ting,wanting@email.com,password123,NULL
+8,extra,extra,extra@email.com,password123,NULL

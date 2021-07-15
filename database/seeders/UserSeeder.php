@@ -28,9 +28,7 @@ class UserSeeder extends Seeder
                 'name'=>$record['name'],
                 'email'=>$record['email'],
                 'password'=>$record['password'],
-                'remember_token'=>$record['remember_token'],
-                'created_at'=>$record['created_at'],
-                'updated_at'=>$record['updated_at']
+                'remember_token'=>$record['remember_token']
             ]);
         }
     }
