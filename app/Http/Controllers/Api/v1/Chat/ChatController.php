@@ -24,7 +24,7 @@ class ChatController extends ApiController
     {
         $user = Auth::user();
 
-        $chats = Chat::with("chatParticipant.user")
+        $chats = Chat::with("chatParticipant.user","listing","latestMessage")
                         ->whereHas("chatParticipant", function ($query) use ($user) {
                             return $query->where('user_id', '=', $user->id);
                         })

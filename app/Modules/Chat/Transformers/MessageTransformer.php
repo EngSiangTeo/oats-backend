@@ -10,6 +10,7 @@ class MessageTransformer extends TransformerAbstract
     public function transform(Message $message)
     {
         $messageArray = [
+        	'id' => $message->id,
             'username' => $message->user->name,
             'message' => $message->content,
         ];
