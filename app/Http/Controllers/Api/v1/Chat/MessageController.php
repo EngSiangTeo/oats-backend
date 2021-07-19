@@ -38,10 +38,16 @@ class MessageController extends ApiController
         $user = Auth::user();
 
         $messages = Chat::findOrFail($chatId)
-                        ->with('message.user');
+                        ->with('message.user','chatParticipant');
 
         $messages = $messages->where('id', $chatId)
                                 ->first();
+        
+        $participants = $messages->chatParticipant->pluck('user_id')->toArray();
+
+        if (!in_array($user->id, $participants)) {
+            return $this->respondUnauthorized();
+        }
 
         $messages = Fractal($messages, new ChatMessagesTransformer($user->id))
                         ->serializeWith(new ArraySerializer())
@@ -62,7 +68,7 @@ class MessageController extends ApiController
 
         broadcast(new MessageSent($user, $message))->toOthers();
 
-        $message = Fractal($message, new MessageTransformer())->toArray();
+        $message = Fractal($message, new MessageTransformer($user->id))->toArray();
 
         return $this->respondSuccess($message, trans('success', ['resource' => 'Messages']));
     }

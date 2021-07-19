@@ -27,7 +27,7 @@ class ChatMessagesTransformer extends TransformerAbstract
 
     public function includeMessages($messages)
     {
-        return $this->collection($messages->message, new MessageTransformer);
+        return $this->collection($messages->message, new MessageTransformer($this->currentUserId));
     }
 
 }
