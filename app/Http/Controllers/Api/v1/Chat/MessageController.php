@@ -38,7 +38,7 @@ class MessageController extends ApiController
         $user = Auth::user();
 
         $messages = Chat::findOrFail($chatId)
-                        ->with('message.user','chatParticipant');
+                        ->with('message.user','chatParticipant', 'listing', 'listing.user');
 
         $messages = $messages->where('id', $chatId)
                                 ->first();

@@ -19,7 +19,10 @@ class ChatMessagesTransformer extends TransformerAbstract
     {
         $chatArray = [
             'chat_id' => $chat->id,
-            'listing_id' => $chat->listing_id
+            'listing_id' => $chat->listing_id,
+            'listing_item' => $chat->listing->title,
+            'listing_user' => $chat->listing->user->username,
+            'listing_price' => $chat->listing->price
         ];
 
         return $chatArray;
