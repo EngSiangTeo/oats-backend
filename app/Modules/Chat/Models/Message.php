@@ -10,7 +10,9 @@ class Message extends Model
     protected $fillable = [
         'content',
         'chat_id',
-        'sentiment'
+        'sentiment',
+        'system_if_offer',
+        'seller_if_offer'
     ];
 
     public function user() {
