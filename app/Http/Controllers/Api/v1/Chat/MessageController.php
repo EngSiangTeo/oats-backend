@@ -88,24 +88,34 @@ class MessageController extends ApiController
                 }else {
                     $message->system_if_offer = 0;
                 }
-                $message->save();
             } else {
                 return $this->respondError('System Error',500);
             }
-
-            $sentiment = $body->body->Sentiment;
-            $message->sentiment = $sentiment;
-            $message->save();
-            if ($sentiment == 'NEGATIVE') {
-                $user->caroupoint--;
-                $user->save();
-                if ($user->caroupoint < 95) {
-                    Listing::where(['user_id'=>$user->id,'deprioritized'=>0])->update(['deprioritized'=>1]);
+            
+            $payload = [
+                "body"=>$payload
+            ];
+            $sentimentAnalysis = $client->put("https://m0yvj161p3.execute-api.us-east-1.amazonaws.com/oats-staging/SentimentAnalysisOats", [
+                RequestOptions::JSON => $payload
+            ]);
+            $sentimentAnalysis = json_decode($sentimentAnalysis->getBody()->getContents());
+            if ($sentimentAnalysis->statusCode == 200) {
+                $sentiment = $sentimentAnalysis->body->Sentiment;
+                $message->sentiment = $sentiment;
+                if ($sentiment == 'NEGATIVE') {
+                    $user->caroupoint--;
+                    if ($user->caroupoint < 95) {
+                        Listing::where(['user_id'=>$user->id,'deprioritized'=>0])->update(['deprioritized'=>1]);
+                    }
+                    if ($user->caroupoint < 80) {
+                        $user->suspension_period = Carbon::now()->addHours(6);
+                    }
+                    $user->save();
                 }
-                if ($user->caroupoint < 80) {
-                    $user->suspension_period = Carbon::now()->addHours(6);
-                }
+            } else {
+                return $this->respondError('System Error',500);
             }
+            $message->save();
         }
 
         $message = $message->fresh();
