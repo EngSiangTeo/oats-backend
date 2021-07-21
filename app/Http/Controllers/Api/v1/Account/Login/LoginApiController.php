@@ -51,6 +51,9 @@ class LoginApiController extends ApiController
             $user->revokeExistingTokensFor($tokenName);
 
             $payload['access_token'] = $user->createToken($tokenName)->accessToken;
+            $payload['username'] = $user->username;
+            $payload['is_ban'] = !is_null($user->suspension_period);
+            $payload['ban_period'] = $user->suspension_period;
 
             return $payload;
         }
