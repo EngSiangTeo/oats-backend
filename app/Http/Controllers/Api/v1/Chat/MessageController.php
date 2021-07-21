@@ -104,12 +104,6 @@ class MessageController extends ApiController
                 $message->sentiment = $sentiment;
                 if ($sentiment == 'NEGATIVE') {
                     $user->caroupoint--;
-                    if ($user->caroupoint < 95) {
-                        Listing::where(['user_id'=>$user->id,'deprioritized'=>0])->update(['deprioritized'=>1]);
-                    }
-                    if ($user->caroupoint < 80) {
-                        $user->suspension_period = Carbon::now()->addHours(6);
-                    }
                     $user->save();
                 }
             } else {
