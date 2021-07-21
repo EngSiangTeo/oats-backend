@@ -10,6 +10,7 @@ use Spatie\Fractal\Fractal;
 use Illuminate\Http\Request;
 use GuzzleHttp\RequestOptions;
 use App\Modules\Chat\Models\Chat;
+use App\Modules\Chat\Models\Message;
 use App\Modules\Chat\Models\Listing;
 use Spatie\Fractalistic\ArraySerializer;
 use App\Modules\Account\User\Models\User;
@@ -125,6 +126,28 @@ class MessageController extends ApiController
         $message = Fractal($message, new MessageTransformer($user->id))->toArray();
 
         return $this->respondSuccess($message, trans('success', ['resource' => 'Messages']));
+    }
+
+    public function updateSellerOffer($messageId, $status)
+    {
+        $user = Auth::user();
+
+        $message = Message::where('id', $messageId)
+                                ->first();
+
+        $message->seller_if_offer = $status;
+        $message->save();
+
+        // $message = Fractal($message->fresh(), new MessageTransformer($user->id))->toArray();
+
+        $messages = Message::where('chat_id', $message->chat_id)
+                            ->get();
+
+        $messages = Fractal($messages, new MessageTransformer($user->id))
+                        ->serializeWith(new ArraySerializer())
+                        ->toArray();
+
+        return $this->respondSuccess($messages, trans('success', ['resource' => 'Messages']));
     }
 
 }
