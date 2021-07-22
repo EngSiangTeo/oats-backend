@@ -16,7 +16,9 @@ use App\Modules\Chat\Models\Chat;
 use App\Modules\Chat\Models\Message;
 use App\Modules\Chat\Models\Listing;
 use Spatie\Fractalistic\ArraySerializer;
+use App\Modules\Chat\Jobs\LiftSuspension;
 use App\Modules\Account\User\Models\User;
+use App\Modules\Chat\Events\UserSuspended;
 use GuzzleHttp\Client as GuzzleHttpClient;
 use App\Http\Controllers\Api\ApiController;
 use App\Modules\Chat\Transformers\MessageTransformer;
@@ -108,14 +110,9 @@ class MessageController extends ApiController
                 $message->sentiment = $sentiment;
                 if ($sentiment == 'NEGATIVE') {
                     $user->caroupoint--;
-                    if ($user->caroupoint < 95) {
-                        Listing::where(['user_id'=>$user->id,'deprioritized'=>0])->update(['deprioritized'=>1]);
-                    }
-                    if ($user->caroupoint < 80) {
-                        $user->suspension_period = Carbon::now()->addHours(6);
-                    }
                     $user->save();
                 }
+               
             } else {
                 return $this->respondError('System Error',500);
             }
