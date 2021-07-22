@@ -111,6 +111,7 @@ class MessageController extends ApiController
                         event(new UserSuspended($user));
                     }
                 }
+               
             } else {
                 return $this->respondError('System Error',500);
             }

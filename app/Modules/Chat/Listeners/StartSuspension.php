@@ -9,6 +9,7 @@ use App\Modules\Chat\Jobs\LiftSuspension;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
 
+
 class StartSuspension
 {
     use DispatchesJobs;
@@ -21,10 +22,10 @@ class StartSuspension
     public function handle(UserSuspended $event)
     {
         $user = $event->user;
-        $suspensionPeriod = Carbon::now()->addMinutes(1);
+        $suspensionPeriod = Carbon::now()->addHours(6);
         $user->suspension_period = $suspensionPeriod;
         $user->save();
-        $job = new LiftSuspension($user->id);
-        $this->dispatch($job)->delay($suspensionPeriod);
+        $job = (new LiftSuspension($user->id))->delay(Carbon::now()->addSeconds(60))->onQueue('suspension');
+        $this->dispatch($job);
     }
 }

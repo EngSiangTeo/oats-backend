@@ -11,7 +11,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 
 class LiftSuspension implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, ShouldQueue;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     protected $userId;
     /**
      * Create a new job instance.
