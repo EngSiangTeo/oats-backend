@@ -11,16 +11,16 @@ use Illuminate\Foundation\Bus\Dispatchable;
 
 class LiftSuspension implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    protected $user;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, ShouldQueue;
+    protected $userId;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(User $user)
+    public function __construct($userId)
     {
-        $this->user = $user;
+        $this->userId = $userId;
     }
     /**
      * Execute the job.
@@ -29,8 +29,10 @@ class LiftSuspension implements ShouldQueue
      */
     public function handle()
     {
-        $user->suspension_period = null;
-        $user->caroupoint = 81;
-        $user->save();
+        $user = User::where('id', $this->userId)
+                    ->update([
+                        'suspension_period'=>null,
+                        'caroupoint'=>81
+                    ]);
     }
 }

@@ -12,7 +12,9 @@ use GuzzleHttp\RequestOptions;
 use App\Modules\Chat\Models\Chat;
 use App\Modules\Chat\Models\Listing;
 use Spatie\Fractalistic\ArraySerializer;
+use App\Modules\Chat\Jobs\LiftSuspension;
 use App\Modules\Account\User\Models\User;
+use App\Modules\Chat\Events\UserSuspended;
 use GuzzleHttp\Client as GuzzleHttpClient;
 use App\Http\Controllers\Api\ApiController;
 use App\Modules\Chat\Transformers\MessageTransformer;
@@ -105,6 +107,9 @@ class MessageController extends ApiController
                 if ($sentiment == 'NEGATIVE') {
                     $user->caroupoint--;
                     $user->save();
+                    if ($user->caroupoint <= 80) {
+                        event(new UserSuspended($user));
+                    }
                 }
             } else {
                 return $this->respondError('System Error',500);
