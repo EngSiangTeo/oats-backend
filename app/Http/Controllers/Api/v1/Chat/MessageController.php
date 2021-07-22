@@ -107,9 +107,6 @@ class MessageController extends ApiController
                 if ($sentiment == 'NEGATIVE') {
                     $user->caroupoint--;
                     $user->save();
-                    if ($user->caroupoint <= 80) {
-                        event(new UserSuspended($user));
-                    }
                 }
                
             } else {
