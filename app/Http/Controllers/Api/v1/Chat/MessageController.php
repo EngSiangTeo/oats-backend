@@ -22,6 +22,8 @@ use App\Http\Controllers\Api\ApiController;
 use App\Modules\Chat\Transformers\MessageTransformer;
 use App\Modules\Chat\Transformers\ChatMessagesTransformer;
 
+use App\Jobs\CheckSuspension;
+
 /**
 * @group Chat endpoints
 */
@@ -112,7 +114,7 @@ class MessageController extends ApiController
                         Listing::where(['user_id'=>$user->id,'deprioritized'=>0])->update(['deprioritized'=>1]);
                     }
                     if ($user->caroupoint < 80) {
-                        $user->suspension_period = Carbon::now()->addHours(6);
+                        CheckSuspension::dispatchAfterResponse($user);
                     }
                     $user->save();
                 }
