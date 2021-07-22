@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Api\v1\Chat;
 use Auth;
 use Exception;
 use Carbon\Carbon;
+use App\Jobs\CheckOffer;
 use App\Events\MessageSent;
 use Spatie\Fractal\Fractal;
 use Illuminate\Http\Request;
+use App\Jobs\BroadcastUpdate;
+use App\Jobs\BroadcastMessage;
 use GuzzleHttp\RequestOptions;
 use App\Modules\Chat\Models\Chat;
 use App\Modules\Chat\Models\Message;
@@ -128,6 +131,35 @@ class MessageController extends ApiController
         return $this->respondSuccess($message, trans('success', ['resource' => 'Messages']));
     }
 
+    public function storeAsync($chatId, Request $request)
+    {
+        $user = Auth::user();
+
+        $message = $user->messages()->create([
+            'chat_id' => $chatId,
+            'content' => $request->input('message')
+        ]);
+
+        $chatListing = Chat::findOrFail($chatId)
+                        ->with('listing');
+        $chatListing = $chatListing->where('id', $chatId)
+                            ->first();
+
+        $seller = $chatListing->listing->user_id;
+
+        if ($seller !== $user->id) {
+            CheckOffer::dispatchAfterResponse($message,$chatListing->listing->price);
+        }
+
+        $message = $message->fresh();
+
+        BroadcastMessage::dispatchAfterResponse($user,$message);
+
+        $message = Fractal($message, new MessageTransformer($user->id))->toArray();
+
+        return $this->respondSuccess($message, trans('success', ['resource' => 'Messages']));
+    }
+
     public function updateSellerOffer($messageId, $status)
     {
         $user = Auth::user();
@@ -138,10 +170,10 @@ class MessageController extends ApiController
         $message->seller_if_offer = $status;
         $message->save();
 
-        // $message = Fractal($message->fresh(), new MessageTransformer($user->id))->toArray();
-
         $messages = Message::where('chat_id', $message->chat_id)
                             ->get();
+
+        BroadcastUpdate::dispatchAfterResponse($message->chat_id, $message->sender_id);
 
         $messages = Fractal($messages, new MessageTransformer($user->id))
                         ->serializeWith(new ArraySerializer())

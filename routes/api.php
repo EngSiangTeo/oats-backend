@@ -25,6 +25,7 @@ Route::middleware('auth:api')->group(function () {
 		Route::get('/messages', 'MessageController@index')->name('get_chats');
 		Route::get('/message/{chatId}', 'MessageController@messagesByChatId')->name('get_chat');
 		Route::post('/message/{chatId}', 'MessageController@store')->name('add_chat');
+		Route::post('/messageAsync/{chatId}', 'MessageController@storeAsync')->name('add_chat_async');
 		Route::post('/message/sellerUpdate/{messageId}/{status}', 'MessageController@updateSellerOffer')->name('seller_update_offer');
 
 		Route::get('/chats', 'ChatController@index')->name('chats');
