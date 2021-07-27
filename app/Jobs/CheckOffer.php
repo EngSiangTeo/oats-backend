@@ -38,7 +38,7 @@ class CheckOffer implements ShouldQueue
     public function handle()
     {
         $payload = [
-         'text' => $this->message->content
+         'message' => $this->message->content
         ];
 
         $client = new GuzzleHttpClient;
@@ -57,7 +57,7 @@ class CheckOffer implements ShouldQueue
             }
         } else {
             Log::error('Error checking offers: ', [
-                            'messageId' => $message->id,
+                            'messageId' => $this->message->id,
                             'resource' => 'AWS Lambda'
                         ]);
         }

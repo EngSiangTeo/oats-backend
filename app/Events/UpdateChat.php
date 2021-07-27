@@ -34,7 +34,7 @@ class UpdateChat implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('chat'.$this->chatId.'user'.$this->userId);
+        return new Channel('chat'.$this->chatId);
     }
 
     public function broadcastAs()

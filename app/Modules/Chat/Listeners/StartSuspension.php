@@ -24,7 +24,7 @@ class StartSuspension
         $user = $event->user;
         $suspensionPeriod = Carbon::now()->addHours(6);
         $user->suspension_period = $suspensionPeriod;
-        $job = (new LiftSuspension($user->id))->delay(Carbon::now()->addSeconds(60))->onQueue('suspension');
+        $job = (new LiftSuspension($user->id))->delay(Carbon::now()->addSeconds(60));
         $this->dispatch($job);
     }
 }
