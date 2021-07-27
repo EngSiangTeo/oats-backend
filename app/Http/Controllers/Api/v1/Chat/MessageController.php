@@ -9,6 +9,7 @@ use App\Jobs\CheckOffer;
 use App\Events\MessageSent;
 use Spatie\Fractal\Fractal;
 use Illuminate\Http\Request;
+use App\Jobs\CheckSentiment;
 use App\Jobs\BroadcastUpdate;
 use App\Jobs\BroadcastMessage;
 use GuzzleHttp\RequestOptions;
@@ -78,7 +79,7 @@ class MessageController extends ApiController
         $seller = $chatListing->listing->user_id;
         if ($seller !== $user->id) {
             $payload = [
-             'text' => $request->input('message')
+             'message' => $request->input('message')
             ];
 
             $client = new GuzzleHttpClient;
@@ -98,9 +99,6 @@ class MessageController extends ApiController
                 return $this->respondError('System Error',500);
             }
             
-            $payload = [
-                "body"=>$payload
-            ];
             $sentimentAnalysis = $client->put("https://m0yvj161p3.execute-api.us-east-1.amazonaws.com/oats-staging/SentimentAnalysisOats", [
                 RequestOptions::JSON => $payload
             ]);
@@ -137,6 +135,11 @@ class MessageController extends ApiController
             'content' => $request->input('message')
         ]);
 
+        $message = $message->fresh();
+
+        BroadcastMessage::dispatchAfterResponse($user,$message);
+        CheckSentiment::dispatchAfterResponse($user,$message);
+
         $chatListing = Chat::findOrFail($chatId)
                         ->with('listing');
         $chatListing = $chatListing->where('id', $chatId)
@@ -147,10 +150,6 @@ class MessageController extends ApiController
         if ($seller !== $user->id) {
             CheckOffer::dispatchAfterResponse($message,$chatListing->listing->price);
         }
-
-        $message = $message->fresh();
-
-        BroadcastMessage::dispatchAfterResponse($user,$message);
 
         $message = Fractal($message, new MessageTransformer($user->id))->toArray();
 

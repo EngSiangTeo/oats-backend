@@ -8,19 +8,25 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use GuzzleHttp\Client as GuzzleHttpClient;
+use GuzzleHttp\RequestOptions;
+use App\Events\UpdateChat;
 
 class CheckSentiment implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    protected $user;
+    protected $message;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($user, $message)
     {
-        //
+        $this->user = $user;
+        $this->message = $message;
     }
 
     /**
@@ -31,27 +37,29 @@ class CheckSentiment implements ShouldQueue
     public function handle()
     {
         $payload = [
-            "body"=>$payload
+         'message' => $this->message->content
         ];
+
+        $client = new GuzzleHttpClient;
         $sentimentAnalysis = $client->put("https://m0yvj161p3.execute-api.us-east-1.amazonaws.com/oats-staging/SentimentAnalysisOats", [
             RequestOptions::JSON => $payload
         ]);
         $sentimentAnalysis = json_decode($sentimentAnalysis->getBody()->getContents());
         if ($sentimentAnalysis->statusCode == 200) {
             $sentiment = $sentimentAnalysis->body->Sentiment;
-            $message->sentiment = $sentiment;
+            $this->message->sentiment = $sentiment;
+            $this->message->save();
             if ($sentiment == 'NEGATIVE') {
-                $user->caroupoint--;
-                if ($user->caroupoint < 95) {
-                    Listing::where(['user_id'=>$user->id,'deprioritized'=>0])->update(['deprioritized'=>1]);
-                }
-                if ($user->caroupoint < 80) {
-                    $user->suspension_period = Carbon::now()->addHours(6);
-                }
-                $user->save();
+                $this->user->caroupoint--;
+                $this->user->save();
+                UpdateChat::dispatch($this->message->chat_id, $this->message->sender_id);
             }
+           
         } else {
-            return $this->respondError('System Error',500);
+            Log::error('Error checking sentiment: ', [
+                            'messageId' => $this->message->id,
+                            'resource' => 'AWS Lambda'
+                        ]);
         }
     }
 }
