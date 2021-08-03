@@ -2,6 +2,7 @@
 
 namespace App\Modules\Chat\Jobs;
 
+use App\Jobs\BroadcastBan;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use App\Modules\Account\User\Models\User;
@@ -34,5 +35,11 @@ class LiftSuspension implements ShouldQueue
                         'suspension_period'=>null,
                         'caroupoint'=>81
                     ]);
+
+        $user = User::where('id', $this->userId)
+                    ->first();
+        BroadcastBan::dispatch($user);
+
+        var_dump('a');
     }
 }

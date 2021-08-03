@@ -8,23 +8,21 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\Events\UpdateChat;
+use App\Events\UpdateBan;
 
-class BroadcastUpdate implements ShouldQueue
+class BroadcastBan implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $chatId;
-    protected $userId;
+    protected $user;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($chatId, $userId)
+    public function __construct($user)
     {
-        $this->chatId = $chatId;
-        $this->userId = $userId;
+        $this->user = $user;
     }
 
     /**
@@ -34,6 +32,6 @@ class BroadcastUpdate implements ShouldQueue
      */
     public function handle()
     {
-        broadcast(new UpdateChat($this->chatId, $this->userId));
+        broadcast(new UpdateBan($this->user));
     }
 }

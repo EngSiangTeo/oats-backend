@@ -55,6 +55,7 @@ class LoginApiController extends ApiController
             $payload['user_id'] = $user->id;
             $payload['is_ban'] = !is_null($user->suspension_period);
             $payload['ban_period'] = $user->suspension_period;
+            $payload['points'] = $user->caroupoint;
 
             return $payload;
         }
