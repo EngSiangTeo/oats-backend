@@ -11,6 +11,7 @@ use Illuminate\Queue\SerializesModels;
 use GuzzleHttp\Client as GuzzleHttpClient;
 use GuzzleHttp\RequestOptions;
 use App\Events\UpdateChat;
+use App\Events\UpdatePoint;
 
 class CheckSentiment implements ShouldQueue
 {
@@ -52,6 +53,7 @@ class CheckSentiment implements ShouldQueue
             if ($sentiment == 'NEGATIVE') {
                 $this->user->caroupoint--;
                 $this->user->save();
+                UpdatePoint::dispatch($this->user);
                 UpdateChat::dispatch($this->message->chat_id, $this->message->sender_id);
             }
            

@@ -10,6 +10,7 @@ use App\Events\MessageSent;
 use Spatie\Fractal\Fractal;
 use Illuminate\Http\Request;
 use App\Jobs\CheckSentiment;
+use App\Jobs\BroadcastPoint;
 use App\Jobs\BroadcastUpdate;
 use App\Jobs\BroadcastMessage;
 use GuzzleHttp\RequestOptions;
@@ -109,6 +110,7 @@ class MessageController extends ApiController
                 if ($sentiment == 'NEGATIVE') {
                     $user->caroupoint--;
                     $user->save();
+                    BroadcastPoint::dispatchAfterResponse($user);
                 }
                
             } else {
@@ -168,6 +170,13 @@ class MessageController extends ApiController
 
         $messages = Message::where('chat_id', $message->chat_id)
                             ->get();
+        if ($status == 0){
+            $sender = User::where('id',$message->sender_id)
+                            ->first();
+            $sender->caroupoint--;
+            $sender->save();
+            BroadcastPoint::dispatchAfterResponse($sender);
+        }
 
         BroadcastUpdate::dispatchAfterResponse($message->chat_id, $message->sender_id);
 
