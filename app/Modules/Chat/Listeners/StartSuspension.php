@@ -24,7 +24,7 @@ class StartSuspension
     public function handle(UserSuspended $event)
     {
         $user = $event->user;
-        $suspensionPeriod = Carbon::now()->addHours(6);
+        $suspensionPeriod = Carbon::now()->setTimezone('Asia/Singapore')->addHours(6);
         $user->suspension_period = $suspensionPeriod;
 
         BroadcastBan::dispatch($user);
