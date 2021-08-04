@@ -5,8 +5,9 @@ namespace App\Modules\Chat\Jobs;
 use App\Jobs\BroadcastBan;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
-use App\Modules\Account\User\Models\User;
+use App\Modules\Listing\Models\Listing;
 use Illuminate\Queue\InteractsWithQueue;
+use App\Modules\Account\User\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
@@ -38,8 +39,12 @@ class LiftSuspension implements ShouldQueue
 
         $user = User::where('id', $this->userId)
                     ->first();
-        BroadcastBan::dispatch($user);
 
-        var_dump('a');
+        Listing::where('user_id', $user->id)
+                ->update([
+                    'deprioritized'=>0
+                ]);
+
+        BroadcastBan::dispatch($user);
     }
 }
