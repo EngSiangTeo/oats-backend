@@ -28,6 +28,7 @@ class UserSeeder extends Seeder
                 'name'=>$record['name'],
                 'email'=>$record['email'],
                 'password'=>$record['password'],
+                'caroupoint'=>$record['caroupoint'],
                 'remember_token'=>$record['remember_token']
             ]);
         }
